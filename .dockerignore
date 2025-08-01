@@ -4,3 +4,5 @@ data
 **/*.pyc
 *.db
 .pytest_cache
+.ipynb_checkpoints
+.ipynb
