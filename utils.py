@@ -57,6 +57,16 @@ def preprocess_data(X: dict)->dict:
     }
 
 def save_result(prediction: Prediction, transaction: Transaction):
+    """
+    This function saves the prediction result to the database.
+    It creates an Output object that combines the transaction and prediction data,
+    along with metadata: timestamp, model version, and scaler version.
+    Args:
+        prediction (Prediction): The prediction result containing pred and pred_proba.
+        transaction (Transaction): The transaction data containing all relevant fields.
+    Returns:
+        None
+    """
     engine = create_engine(config.db_url)
     dat = Output(
         **transaction.model_dump(),
