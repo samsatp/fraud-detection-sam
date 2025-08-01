@@ -48,7 +48,7 @@ async def predict(body: Transaction) -> Prediction:
 
     """
      # get features from the input data
-    x_features = preprocess_data(body.model_dump())
+    x_features = preprocess_data(body)
     
     if x_features['transac_type'] == -1:
         

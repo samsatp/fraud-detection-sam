@@ -9,14 +9,14 @@ class Transaction(BaseModel):
     time_ind:         int # Simulation unit of time (step=1 is 1 hour; total 744 steps = 30 days)
     transac_type:     str # Transaction type (CASH-IN, CASH-OUT, DEBIT, PAYMENT, TRANSFER)
     amount:           float # Transaction amount (local currency)
-    src_acc:          Optional[str] # Customer initiating the transaction
+    src_acc:          Optional[str] = None # Customer initiating the transaction
     src_bal:          float # Initial balance (sender) before transaction
     src_new_bal:      float # New balance (sender) after transaction
-    dst_acc:          Optional[str] # Transaction recipient
+    dst_acc:          Optional[str] = None # Transaction recipient
     dst_bal:          float # Initial balance (recipient) before transaction (missing for merchants)
     dst_new_bal:      float # New balance (recipient) after transaction (missing for merchants)
-    is_fraud:         Optional[bool] # Transactions made by fraudulent agents (target)
-    is_flagged_fraud: Optional[bool] # Transactions flagged for illegal attempts (e.g. transferring more than 200,000 in one transaction)
+    is_fraud:         Optional[bool] = None # Transactions made by fraudulent agents (target)
+    is_flagged_fraud: Optional[bool] = None # Transactions flagged for illegal attempts (e.g. transferring more than 200,000 in one transaction)
 
 class Prediction(BaseModel):
     pred: bool # Prediction result (fraudulent or not)
@@ -36,7 +36,7 @@ class Output(Transaction, Prediction):
     model_version:  str # Version of the model used for prediction
     scaler_version: str # Version of the scaler used for preprocessing
 
-def preprocess_data(X: dict)->dict:
+def preprocess_data(X: Transaction)->dict:
     """
     This function preprocesses the input data for the model, 
     following insights from the EDA.
@@ -46,14 +46,14 @@ def preprocess_data(X: dict)->dict:
         'CASH_OUT': 0,
     }
     return {
-        'transac_type': transac_type_map.get(X['transac_type'], -1),
-        'amount': X['amount'],
-        'src_bal': X['src_bal'],
-        'src_new_bal': X['src_new_bal'],
-        'dst_bal': X['dst_bal'],
-        'dst_new_bal': X['dst_new_bal'],
-        'day_of_month': (X['time_ind'] // 24) + 1,
-        'hour_of_day': X['time_ind'] % 24
+        'transac_type': transac_type_map.get(X.transac_type, -1),
+        'amount': X.amount,
+        'src_bal': X.src_bal,
+        'src_new_bal': X.src_new_bal,
+        'dst_bal': X.dst_bal,
+        'dst_new_bal': X.dst_new_bal,
+        'day_of_month': (X.time_ind // 24) + 1,
+        'hour_of_day': X.time_ind % 24
     }
 
 def save_result(prediction: Prediction, transaction: Transaction):
