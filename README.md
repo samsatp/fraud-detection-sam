@@ -83,6 +83,17 @@ Predict if a transaction is fraudulent.
 
 **Request Body Example:**
 ```json
+{
+    "time_ind": 1, 
+    "transac_type": "TRANSFER", 
+    "amount": 181.0, 
+    "src_acc": "acc1796908", 
+    "src_bal": 181.0, 
+    "src_new_bal": 0.0, 
+    "dst_acc": "acc4938640", 
+    "dst_bal": 0.0, 
+    "dst_new_bal": 0.0
+}
 
 ```
 
@@ -90,7 +101,7 @@ Predict if a transaction is fraudulent.
 ```json
 {
   "pred": true,
-  "pred_proba": 0.98
+  "pred_proba": 1
 }
 ```
 
@@ -103,7 +114,26 @@ Retrieve all transactions previously predicted as fraudulent.
 
 **Response Example:**
 ```json
-
+[
+  {
+    "pred": true,
+    "pred_proba": 1,
+    "time_ind": 1,
+    ...
+    "timestamp": "2025-08-01T07:38:29.450325",
+    "model_version": "models/model.pkl",
+    "scaler_version": "models/scaler.pkl"
+  },
+  {
+    "pred": true,
+    "pred_proba": 1,
+    "time_ind": 1,
+    ...
+    "timestamp": "2025-08-01T07:38:41.991734",
+    "model_version": "models/model.pkl",
+    "scaler_version": "models/scaler.pkl"
+  }
+]
 ```
 
 ## Testing
