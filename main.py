@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from config import config
+from .config import config
 from typing import Optional
 import pickle
 from .utils import (

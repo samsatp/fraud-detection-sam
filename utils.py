@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 from sqlalchemy import create_engine
 from typing import Optional, List
-from config import config
+from .config import config
 
 class Transaction(BaseModel):
     time_ind:         int # Simulation unit of time (step=1 is 1 hour; total 744 steps = 30 days)
@@ -65,7 +65,7 @@ def save_result(prediction: Prediction, transaction: Transaction):
         timestamp=datetime.now().isoformat(),
         model_version=config.model_path,
         scaler_version=config.scaler_path
-    )
+    ).model_dump()
 
     df = pd.DataFrame([dat])
     df.to_sql(config.dst_table_name, con=engine, if_exists='append', index=False)
