@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from .config import config
 from typing import Optional
-import pickle
+import pickle, json
 from .utils import (
     preprocess_data, 
     Transaction, 
@@ -19,6 +19,7 @@ async def lifespan(app: FastAPI):
     # load the model and scaler
     ml_models["model"] = pickle.load(open(config.model_path, 'rb'))
     ml_models["scaler"] = pickle.load(open(config.scaler_path, 'rb'))
+    ml_models["features"] = json.load(open(config.features_path, 'r'))
     yield
     # Clean up and release the resources
     ml_models.clear()
@@ -31,13 +32,14 @@ app = FastAPI(lifespan=lifespan)
 async def predict(body: Transaction) -> Prediction:
     """
     Predicts whether a given transaction is fraudulent.
+
     The transaction data is processed as follows:
-    - The transaction type is checked; if it is not a 'TRANSFER' or 'CASH_OUT', it is immediately classified as not fraudulent.
-    - Feature engineering:
+    1. Feature engineering:
         - only these features are used: `transac_type, amount, src_bal, src_new_bal, dst_bal, dst_new_bal`
         - in addition, `day_of_month` and `hour_of_day` are derived from `time_ind`
-    - The input features are scaled using a pre-trained standardization scaler.
-    - The pre-trained model predicts if the transaction is fraudulent using the scaled input features.
+    2. The transaction type is checked; if it is not a 'TRANSFER' or 'CASH_OUT', it is immediately classified as not fraudulent.
+    3. The input features are scaled using a pre-trained standardization scaler.
+    4. The pre-trained model predicts if the transaction is fraudulent using the scaled input features.
     
     Args:
         body (Transaction): The transaction data to be evaluated.
@@ -45,17 +47,25 @@ async def predict(body: Transaction) -> Prediction:
         Prediction: An object indicating whether the transaction is predicted to be fraudulent.
 
     """
-    x = preprocess_data(body.model_dump())
-    if x['transac_type'] == -1:
+     # get features from the input data
+    x_features = preprocess_data(body.model_dump())
+    
+    if x_features['transac_type'] == -1:
+        
         # if the transaction type is not TRANSFER or CASH_OUT, return False
         pred = Prediction(pred=False, pred_proba=None)
     else:
+        # convert the features to a list in the order of the model's expected input
+        x_numbers = [x_features[_] for _ in ml_models["features"]] 
+        
         # Scale the input features
-        x_scaled = ml_models["scaler"].transform([x])
+        x_scaled = ml_models["scaler"].transform([x_numbers])
+        
         # Predict using the pre-trained model
         pred_result = ml_models["model"].predict(x_scaled)
         pred_proba = ml_models["model"].predict_proba(x_scaled)[0][1] if hasattr(ml_models["model"], "predict_proba") else None
         pred = Prediction(pred=bool(pred_result[0]), pred_proba=pred_proba)
+    
     # Save the result to the database
     save_result(prediction=pred, transaction=body)
     return pred
