@@ -27,19 +27,19 @@ class Features(BaseModel):
     It includes the preprocessed fields from the Transaction model.
     """
     transac_type: int # Encoded transaction type (1 for TRANSFER, 0 for CASH_OUT, or -1 for others)
-    amount: float # Transaction amount
-    src_bal: float # Initial balance of the sender
-    src_new_bal: float # New balance of the sender after transaction
-    dst_bal: float # Initial balance of the recipient
-    dst_new_bal: float # New balance of the recipient after transaction
+    amount:       float
+    src_bal:      float
+    src_new_bal:  float
+    dst_bal:      float
+    dst_new_bal:  float
     day_of_month: int # Day of the month (~1-30)
-    hour_of_day: int # Hour of the day (~0-23)
+    hour_of_day:  int # Hour of the day (~0-23)
 
 class Prediction(BaseModel):
     """
     This data model represents the prediction result.
     """
-    pred: bool # Prediction result (fraudulent or not)
+    pred:       bool # Prediction result (fraudulent or not)
     pred_proba: Optional[float] = None # Probability of being fraudulent (if available)
 
 class Output(Transaction, Prediction):
