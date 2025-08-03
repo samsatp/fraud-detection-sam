@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
-from .main import app, Transaction, Prediction
-from .utils import save_result
+from src.main import app, Transaction, Prediction
+from src.utils import save_result
 import duckdb
 
 client = TestClient(app)
