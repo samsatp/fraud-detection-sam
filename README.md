@@ -49,17 +49,13 @@ bash run_docker.sh
 
 ### (option 2) with Python's virtual environment
 
-1. **Create a Python3.10 venv**
+1. **Create a Python3.10 venv and install dependencies (if not done already)**
     ```sh
     python3.10 -m venv .venv
     source .venv/bin/activate
-    ```
-2. **Install dependencies:**
-    ```sh
     pip install -r requirements.txt
     ```
-
-3. **Run the FastAPI app:**
+2. **Run the FastAPI app:**
     ```sh
     fastapi run src/main.py --port 8080
     ```
