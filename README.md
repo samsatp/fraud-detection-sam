@@ -1,7 +1,10 @@
 # Fraud Detection FastAPI Service
 
-Architecture exaplination:
+**Architecture exaplination:**
 - This is a FastAPI-based web service for detecting fraudulent financial transactions using a pre-trained machine learning model. It provides RESTful endpoints for predicting fraud and retrieving previously predicted fraudulent transactions. The service uses a SQLite database to store predictions. Docker is supported for easy deployment.
+
+**Architecture diagram:**
+![Architecture Diagram](./diagram.png)
 
 ## Features
 
