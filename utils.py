@@ -6,6 +6,9 @@ from typing import Optional, List
 from .config import config
 
 class Transaction(BaseModel):
+    """
+    This data model represents an input transaction entry.
+    """
     time_ind:         int # Simulation unit of time (step=1 is 1 hour; total 744 steps = 30 days)
     transac_type:     str # Transaction type (CASH-IN, CASH-OUT, DEBIT, PAYMENT, TRANSFER)
     amount:           float # Transaction amount (local currency)
@@ -18,7 +21,24 @@ class Transaction(BaseModel):
     is_fraud:         Optional[bool] = None # Transactions made by fraudulent agents (target)
     is_flagged_fraud: Optional[bool] = None # Transactions flagged for illegal attempts (e.g. transferring more than 200,000 in one transaction)
 
+class Features(BaseModel):
+    """
+    This data model represents the features used for prediction.
+    It includes the preprocessed fields from the Transaction model.
+    """
+    transac_type: int # Encoded transaction type (1 for TRANSFER, 0 for CASH_OUT, or -1 for others)
+    amount: float # Transaction amount
+    src_bal: float # Initial balance of the sender
+    src_new_bal: float # New balance of the sender after transaction
+    dst_bal: float # Initial balance of the recipient
+    dst_new_bal: float # New balance of the recipient after transaction
+    day_of_month: int # Day of the month (~1-30)
+    hour_of_day: int # Hour of the day (~0-23)
+
 class Prediction(BaseModel):
+    """
+    This data model represents the prediction result.
+    """
     pred: bool # Prediction result (fraudulent or not)
     pred_proba: Optional[float] = None # Probability of being fraudulent (if available)
 
@@ -36,25 +56,26 @@ class Output(Transaction, Prediction):
     model_version:  str # Version of the model used for prediction
     scaler_version: str # Version of the scaler used for preprocessing
 
-def preprocess_data(X: Transaction)->dict:
+def preprocess_data(X: Transaction)->Features:
     """
     This function preprocesses the input data for the model, 
     following insights from the EDA.
     """
+    # This mapping must be consistent with the model training phase.
     transac_type_map = {
         'TRANSFER': 1,
         'CASH_OUT': 0,
     }
-    return {
-        'transac_type': transac_type_map.get(X.transac_type, -1),
-        'amount': X.amount,
-        'src_bal': X.src_bal,
-        'src_new_bal': X.src_new_bal,
-        'dst_bal': X.dst_bal,
-        'dst_new_bal': X.dst_new_bal,
-        'day_of_month': (X.time_ind // 24) + 1,
-        'hour_of_day': X.time_ind % 24
-    }
+    return Features(
+        transac_type=transac_type_map.get(X.transac_type, -1),
+        amount=X.amount,
+        src_bal=X.src_bal,
+        src_new_bal=X.src_new_bal,
+        dst_bal=X.dst_bal,
+        dst_new_bal=X.dst_new_bal,
+        day_of_month=(X.time_ind // 24) + 1,
+        hour_of_day=X.time_ind % 24
+    )
 
 def save_result(prediction: Prediction, transaction: Transaction):
     """
