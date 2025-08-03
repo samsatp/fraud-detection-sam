@@ -1,6 +1,7 @@
 # Fraud Detection FastAPI Service
 
-This project is a FastAPI-based web service for detecting fraudulent financial transactions using a pre-trained machine learning model. It provides RESTful endpoints for predicting fraud and retrieving previously predicted fraudulent transactions.
+Architecture exaplination:
+- This is a FastAPI-based web service for detecting fraudulent financial transactions using a pre-trained machine learning model. It provides RESTful endpoints for predicting fraud and retrieving previously predicted fraudulent transactions. The service uses a SQLite database to store predictions. Docker is supported for easy deployment.
 
 ## Features
 
@@ -31,6 +32,11 @@ This project is a FastAPI-based web service for detecting fraudulent financial t
 - Python 3.10+
 - Docker (optional)
 
+## Running the EDA and training
+
+1. Put the dataset  (`fraud_mock.csv`) in the `data/` folder. So that the file path should be `data/fraud_mock.csv`.
+2. Run the `notebooks/EDA.ipynb` to perform EDA
+3. Run the `notebooks/train.ipynb` to perform feature engineering, model training, parameter tuning, and saving the model.
 
 ## Running the FastAPI App
 
@@ -74,8 +80,14 @@ bash run_docker.sh
 - The API will be available at [http://localhost:8080](http://localhost:8080)
 - The documentation can be accessed at [http://localhost:8080/docs](http://localhost:8080/docs)
 
+> Note: if you first run the Docker, the database will be created in the `output/` folder as readonly (written by the container). If you later run the FastAPI app without Docker and use the same database, you will need to change the permissions of the `output/` folder to allow writing:
+```sh
+sudo chmod -R 777 output/
+```
 
 ## API Endpoints
+
+The endpoints can be tested directly at [http://localhost:8080/docs](http://localhost:8080/docs)
 
 ### POST `/predict`
 
