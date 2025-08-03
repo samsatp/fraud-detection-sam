@@ -38,6 +38,12 @@
 ## Running the EDA and training
 
 1. Put the dataset  (`fraud_mock.csv`) in the `data/` folder. So that the file path should be `data/fraud_mock.csv`.
+2. Create a Python3.10 virtual environment and install the dependencies:
+   ```sh
+   python3.10 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
 2. Run the `notebooks/EDA.ipynb` to perform EDA
 3. Run the `notebooks/train.ipynb` to perform feature engineering, model training, parameter tuning, and saving the model.
 
