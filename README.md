@@ -21,7 +21,7 @@ This project is a FastAPI-based web service for detecting fraudulent financial t
 ├── requirements.txt    # Python dependencies
 ├── Dockerfile          # Docker container setup
 ├── run_docker.sh       # Helper script to run Docker
-├── data/               # Data file
+├── data/               # Data file (only used to store the given dataset for training)
 ├── models/             # Saved ML model and scaler
 └── README.md           # Project documentation
 ```
@@ -35,7 +35,7 @@ This project is a FastAPI-based web service for detecting fraudulent financial t
 ## Running the FastAPI App
 
 
-### With Docker
+### (option 1) with Docker
 
 1. **Build the Docker image:**
    ```sh
@@ -44,22 +44,22 @@ This project is a FastAPI-based web service for detecting fraudulent financial t
 
 2. **Run the container:**
    ```sh
-   docker run -p 80:80 fraud-api-sam
+   docker run -p 8080:8080 fraud-api-sam
    ```
 
 Or using the provided script:
 ```sh
 bash run_docker.sh
 ```
-- The API will be available at [http://localhost:80](http://localhost:80)
-- The documentation can be accessed at [http://localhost:80/docs](http://localhost:80/docs)
+- The API will be available at [http://localhost:8080](http://localhost:8080)
+- The documentation can be accessed at [http://localhost:8080/docs](http://localhost:8080/docs)
 
-### With Python's virtual environment
+### (option 2) with Python's virtual environment
 
 1. **Create a Python3.10 venv**
     ```sh
     python3.10 -m venv .venv
-    source venv/bin/activate
+    source .venv/bin/activate
     ```
 2. **Install dependencies:**
     ```sh
@@ -68,11 +68,11 @@ bash run_docker.sh
 
 3. **Run the FastAPI app:**
     ```sh
-    uvicorn main:app --reload
+    fastapi run main.py --port 8080
     ```
 
-- The API will be available at [http://localhost:80](http://localhost:80)
-- The documentation can be accessed at [http://localhost:80/docs](http://localhost:80/docs)
+- The API will be available at [http://localhost:8080](http://localhost:8080)
+- The documentation can be accessed at [http://localhost:8080/docs](http://localhost:8080/docs)
 
 
 ## API Endpoints
@@ -147,7 +147,7 @@ bash test.sh
 Or directly with pytest:
 
 ```sh
-db_url='sqlite:///test.db' pytest test.py -svv
+db_url='sqlite:///output/test.db' pytest test.py -svv
 ```
 
 ## Configuration
