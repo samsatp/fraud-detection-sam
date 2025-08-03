@@ -1,34 +1,12 @@
 # Fraud Detection FastAPI Service
 
 **Architecture exaplination:**
-- This is a FastAPI-based web service for detecting fraudulent financial transactions using a pre-trained machine learning model. It provides RESTful endpoints for predicting fraud and retrieving previously predicted fraudulent transactions. The service uses a SQLite database to store predictions. Docker is supported for easy deployment.
+This FastAPI-based web service detects fraudulent financial transactions using a pre-trained machine learning model. At startup, it loads the model and scaler to enable fast inference. The application offers RESTful endpoints for predicting fraud and retrieving past predictions, which are stored in a local SQLite database. It includes unit tests for the API endpoints and supports Docker for easy deployment.
+
 
 **Architecture diagram:**
 ![Architecture Diagram](./diagram.png)
 
-## Features
-
-- **/predict**: Accepts transaction data and returns a fraud prediction.
-- **/frauds**: Returns all transactions previously predicted as fraudulent.
-- Loads a pre-trained model and scaler at startup.
-- Stores and retrieves predictions from a local database.
-- Includes unit tests for API endpoints.
-
-## Project Structure
-
-```
-.
-├── config.py           # Configuration (paths, settings)
-├── main.py             # FastAPI app and endpoints
-├── utils.py            # Data preprocessing, models, helpers
-├── test.py             # Unit tests for API endpoints
-├── requirements.txt    # Python dependencies
-├── Dockerfile          # Docker container setup
-├── run_docker.sh       # Helper script to run Docker
-├── data/               # Data file (only used to store the given dataset for training)
-├── models/             # Saved ML model and scaler
-└── README.md           # Project documentation
-```
 
 ## Requirements
 
@@ -83,7 +61,7 @@ bash run_docker.sh
 
 3. **Run the FastAPI app:**
     ```sh
-    fastapi run main.py --port 8080
+    fastapi run src/main.py --port 8080
     ```
 
 - The API will be available at [http://localhost:8080](http://localhost:8080)
