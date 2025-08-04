@@ -7,6 +7,14 @@ This FastAPI-based web service detects fraudulent financial transactions using a
 **Architecture diagram:**
 ![Architecture Diagram](./diagram.png)
 
+For fraud detection service,
+- The fraud detection service is containerized and deployed as multiple Pods managed by a Kubernetes Deployment
+- A Kubernetes Deployment manages Pods (with multiple replicas) and handles scaling and rolling updates.
+- Each Pod runs a Kafka consumer
+- All pods are in the same Kafka consumer group.
+
+For auditors,
+- The auditors can access the UI to view and edit via the web interface, accessing through the cluster ingress.
 
 ## Requirements
 
