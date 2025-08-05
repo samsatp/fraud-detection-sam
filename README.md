@@ -141,7 +141,8 @@ Retrieve all transactions previously predicted as fraudulent.
 
 ## Testing
 
-Run all tests using:
+Make sure to put the dataset (`fraud_mock.csv`) in the `data/` folder before running tests. 
+After the virtual environment is created and activated, run all tests using:
 
 ```sh
 bash test.sh

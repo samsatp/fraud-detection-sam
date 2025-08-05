@@ -5,6 +5,16 @@ import duckdb
 
 client = TestClient(app)
 
+def test_get_fraud_from_empty_db():
+    """
+    [GET /frauds] Should return an empty list if no transactions are found.
+    """
+    with TestClient(app) as client:
+        response = client.get("/frauds")
+        assert response.status_code == 200
+        print(response.json())
+        assert response.json() == []
+
 def test_predict():
     """
     [POST /predict] Should return a json consisting of 'pred'.

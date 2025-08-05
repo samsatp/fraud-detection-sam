@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlalchemy import create_engine
 from typing import Optional, List
 from .config import config
+from sqlalchemy.engine import reflection
 
 class Transaction(BaseModel):
     """
@@ -115,6 +116,17 @@ def get_all_fraud_transactions(proba_threshold: float = None) -> List[Output]:
         If no transactions are found, an empty list is returned.
     """
     engine = create_engine(config.db_url)
+    inspector = reflection.Inspector.from_engine(engine)
+    table_names = inspector.get_table_names()
+    print(f"table_names: {table_names}")
+    # Check if the destination table exists in the database
+    if config.dst_table_name not in table_names:
+        print(
+            f"Table {config.dst_table_name} does not exist in the database. "
+            "This happens when the model has not yet predicted any fraudulent transactions."
+        )
+        return []
+    # If proba_threshold is provided, filter transactions based on it
     if isinstance(proba_threshold, float):
         query = f"SELECT * FROM {config.dst_table_name} WHERE pred_proba >= {proba_threshold}"
     else:
