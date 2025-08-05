@@ -38,17 +38,7 @@ For auditors,
 
 ### (option 1) with Docker
 
-1. **Build the Docker image:**
-   ```sh
-   docker build -t fraud-api-sam .
-   ```
-
-2. **Run the container:**
-   ```sh
-   docker run -p 8080:8080 fraud-api-sam
-   ```
-
-Or using the provided script:
+Using the provided script:
 ```sh
 bash run_docker.sh
 ```
