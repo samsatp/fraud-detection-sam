@@ -4,6 +4,7 @@ image_name="fraud-api-sam"
 container_name="fraud-api-sam-container"
 
 # Clean up any existing containers or images
+docker stop $container_name || true
 docker rm -f $container_name || true
 docker rmi $image_name || true
 
